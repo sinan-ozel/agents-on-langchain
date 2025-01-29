@@ -1,0 +1,13 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir pip setuptools wheel
+RUN pip install --no-cache-dir build
+
+
+COPY pyproject.toml ./
+COPY ./src ./src
+COPY ./tests ./tests
+RUN pip install --no-cache-dir ".[dev]"
+RUN rm -rf /app

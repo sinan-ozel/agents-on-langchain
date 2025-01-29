@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    command: ["pytest", "--maxfail=1", "-vv", "--disable-warnings", "--tb=short"]
+
+  build:
+    build:
+      context: ./
+      dockerfile: Dockerfile.build
+    volumes:
+      - ./src:/app
+      - ./tests:/app/tests
+    command: ["bash", "-c", "python -m build && twine upload dist/*"]
