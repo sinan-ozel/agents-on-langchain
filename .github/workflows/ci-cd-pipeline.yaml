@@ -60,3 +60,10 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Get the last Git tag
+        id: git_tag
+        run: |
+          # Get the last Git tag (stable version)
+          LAST_TAG=$(git describe --tags --abbrev=0 || echo "0.1.0")
+          echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
+          echo "Last Git tag: $LAST_TAG"
