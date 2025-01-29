@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "A lightweight Python package for creating agents on Langchain for Agentic platforms"
 readme = "README.md"
 authors = [
-    { name = "Sinan Ozel", email = "coding@sinan.slmail.me" }
+    { name = "Sinan Ozel", email = "coding@sinan.slmail.me" },
 ]
 license = { file = "LICENSE" }
 dependencies = [
@@ -50,3 +50,7 @@ exclude = ["__pycache__", "*.pyc", "build", "dist"]
 
 [tool.setuptools.dynamic]
 version = { attr = "agents_on_langchain.__version__" }
+
+[project.urls]
+Homepage = "https://github.com/sinan-ozel/agents-on-langchain"
+Issues = "https://github.com/sinan-ozel/agents-on-langchain/issues"

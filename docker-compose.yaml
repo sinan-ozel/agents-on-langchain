@@ -14,4 +14,5 @@ services:
     volumes:
       - ./src:/app
       - ./tests:/app/tests
-    command: ["bash", "-c", "python -m build && twine upload dist/*"]
+      - ./build:/build
+    command: ["bash", "-c", "/versioning_script.sh"]
