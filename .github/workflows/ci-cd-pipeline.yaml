@@ -27,7 +27,7 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 ./src ./tests
+          flake8 --config=.flake8 ./src ./tests
 
   test:
     runs-on: ubuntu-latest
