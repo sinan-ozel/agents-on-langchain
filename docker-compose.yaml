@@ -6,13 +6,3 @@ services:
       context: .
       dockerfile: Dockerfile.test
     command: ["pytest", "--maxfail=1", "-vv", "--disable-warnings", "--tb=short"]
-
-  build:
-    build:
-      context: ./
-      dockerfile: Dockerfile.build
-    volumes:
-      - ./src:/app
-      - ./tests:/app/tests
-      - ./build:/build
-    command: ["bash", "-c", "/versioning_script.sh"]
