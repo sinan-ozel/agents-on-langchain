@@ -13,8 +13,9 @@ authors = [
 license = { file = "LICENSE" }
 dependencies = [
     "langchain-core>=0.3.31",
+    "torch>=2.4.1",
     "typing-extensions>=4.0.0",
-    "numpy==1.26.4",
+    "numpy>=1.26.4",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
