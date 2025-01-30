@@ -2,6 +2,9 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
+RUN apt update
+RUN apt install -y git
+
 RUN pip install --no-cache-dir pip setuptools wheel
 RUN pip install --no-cache-dir build
 
@@ -11,3 +14,5 @@ COPY ./src ./src
 COPY ./tests ./tests
 RUN pip install --no-cache-dir ".[dev]"
 RUN rm -rf /app
+
+RUN mkdir -p /root/.ssh && chmod 600 /root/.ssh

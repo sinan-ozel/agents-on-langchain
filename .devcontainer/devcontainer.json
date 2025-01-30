@@ -33,5 +33,10 @@
             "editor.trimAutoWhitespace": true,
             "files.trimTrailingWhitespace": true
         }
-    }
+    },
+    "mounts": [
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}\\.ssh,target=/root/.ssh,type=bind",
+        "source=${localEnv:HOME}${localEnv:USERPROFILE}\\.gitconfig,target=/root/.gitconfig,type=bind"
+    ],
+    "postCreateCommand": "chmod 600 /root/.ssh/*"
 }
