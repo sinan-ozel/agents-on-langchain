@@ -5,10 +5,12 @@ This module defines the SystemStatusAgent class, which collects and tracks
 system information such as GPU availability, GPU model, and language model name.
 It updates this information periodically and provides it as context for query responses.
 """
+from typing import Iterable, List, Tuple
 import torch
-from typing import Iterable
 from langchain_core.language_models.llms import BaseLLM
 from .base_agent import BaseAgent
+
+from . import streamed_response
 
 
 class SystemStatusAgent(BaseAgent):
@@ -48,12 +50,20 @@ class SystemStatusAgent(BaseAgent):
         """
         return False
 
+    def _retrieve(self, q: str) -> List[Tuple[str, dict]]:
+        """
+        This agent does not retrieve information.
+        """
+        return []
+
     def _collect_status(self):
         """
         Collect system status including GPU details and model name.
         """
         if torch.cuda.is_available():
-            self.gpu_memory = torch.cuda.get_device_properties(0).total_memory // (1024 ** 2)  # Convert to MB
+            self.gpu_memory = torch.cuda\
+                .get_device_properties(0)\
+                .total_memory // (1024 ** 2)  # Convert to MB
             self.gpu_name = torch.cuda.get_device_name(0)
         else:
             self.gpu_memory = "No GPU available"
@@ -77,13 +87,12 @@ class SystemStatusAgent(BaseAgent):
             return "System status has not been collected yet. "\
                    "Please wait for the next update cycle."
 
+    @streamed_response
     def respond(self, q: str) -> Iterable[str]:
         """
         Generate a response using system information as context.
         """
-        prompt = self._prompt(q)
-        for chunk in self.base_llm.bind(skip_prompt=True).stream(prompt):
-            yield chunk
+        return self._prompt(q)
 
     def run(self) -> None:
         """
