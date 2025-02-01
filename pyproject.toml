@@ -13,8 +13,9 @@ authors = [
 license = { file = "LICENSE" }
 dependencies = [
     "langchain-core>=0.3.31",
+    "torch>=2.4.1",
     "typing-extensions>=4.0.0",
-    "numpy==1.26.4",
+    "numpy>=1.26.4",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -26,11 +27,13 @@ classifiers = [
 test = [
     "pytest>=7.0.0",         # For running tests
     "pytest-cov>=3.0.0",     # For test coverage reporting
+    "pytest-mock>=3.14.0",   # For mocking in tests
 ]
 
 dev = [
     "pytest>=7.0.0",         # For running tests
     "pytest-cov>=3.0.0",     # For test coverage reporting
+    "pytest-mock>=3.14.0",   # For mocking in tests
     "flake8>=5.0.0",         # For linting
     "black>=23.0",           # For code formatting
     "mypy>=1.0.0",           # For static type checking

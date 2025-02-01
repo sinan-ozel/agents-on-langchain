@@ -8,3 +8,14 @@
 # ".dev" and date and the git commit hash
 
 __version__ = "0.1.0"
+
+
+def streamed_response(func):
+    """
+    Wrapper function for the respond method to handle streaming responses.
+    """
+    def new_func(self, *args, **kwargs):
+        prompt = func(self, *args, **kwargs)
+        for chunk in self.base_llm.bind(skip_prompt=True).stream(prompt):
+            yield chunk
+    return new_func
