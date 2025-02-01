@@ -11,6 +11,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'  # Only run on pull requests
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -31,6 +32,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'  # Only run on pull requests
     needs: lint  # Ensures linting runs before tests
     steps:
       - name: Checkout Code
@@ -50,6 +52,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only run on push to main (after PR is merged)
     needs: test  # Ensures tests pass before building and uploading
     steps:
       - name: Checkout Code
