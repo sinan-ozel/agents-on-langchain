@@ -53,7 +53,8 @@ class BaseAgent(ABC):
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
         handler = logging.StreamHandler()
-        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        formatter = logging.Formatter(format)
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.WARNING)
