@@ -5,8 +5,7 @@
 # pylint: disable=wrong-import-order
 import pytest
 import logging
-from typing import Iterable, List, Tuple, Callable
-import numpy as np
+from typing import Iterable, List, Tuple
 
 from agents_on_langchain.base_agent import BaseAgent
 
