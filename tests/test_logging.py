@@ -48,7 +48,8 @@ class TestAgent(BaseAgent):
             q (str): The query string.
 
         Returns:
-            List[Tuple[str, dict]]: A list containing the query paired with an empty dictionary.
+            List[Tuple[str, dict]]: A list containing the query paired with an
+            empty dictionary.
         """
         return [(q, {})]
 
@@ -78,9 +79,9 @@ class TestAgent(BaseAgent):
 
     def run(self) -> None:
         """
-        Placeholder method for running the agent. Does nothing in this test implementation.
+        Placeholder method for running the agent. Does nothing in this test
+        implementation.
         """
-        pass
 
 
 @pytest.fixture
@@ -122,7 +123,8 @@ def caplog_debug(caplog):
 
 def test_logger_initialization(agent):
     """
-    Test that the agent's logger is initialized correctly with the expected name and level.
+    Test that the agent's logger is initialized correctly with the expected name
+    and level.
 
     Args:
         agent (TestAgent): The TestAgent instance to test.
@@ -145,8 +147,10 @@ def test_logging_ask(agent, other_agent, caplog_debug):
     list(agent.ask(other_agent, q))  # Trigger the logging
     print(caplog_debug.text.split("\n"))
 
-    assert any("Asking" in message and q in message for message in caplog_debug.text.split("\n"))
-    assert any("Received" in message and q in message for message in caplog_debug.text.split("\n"))
+    assert any("Asking" in message and q in message
+               for message in caplog_debug.text.split("\n"))
+    assert any("Received" in message and q in message
+               for message in caplog_debug.text.split("\n"))
 
 
 def test_logging_tell(agent, other_agent, caplog_debug):
@@ -155,14 +159,15 @@ def test_logging_tell(agent, other_agent, caplog_debug):
 
     Args:
         agent (TestAgent): The agent instance.
-        other_agent (TestAgent): Another agent instance to pass as a parameter to `tell`.
+        other_agent (TestAgent): Another agent instance.
         caplog_debug: The fixture to capture logs.
     """
     agent.logger.level = logging.DEBUG
     context = "New context"
     agent.tell(other_agent, context)
 
-    assert any("Telling" in message and context in message for message in caplog_debug.text.split("\n"))
+    assert any("Telling" in message and context in message
+               for message in caplog_debug.text.split("\n"))
 
 
 def test_evaluate(agent):
