@@ -17,3 +17,4 @@
 - [ ] If adding a new agent, I checked all of the previous agents to make sure I am not duplicating.
 - [ ] If adding a new agent, I added new checks.
 - [ ] I added docstrings and inline comments to clarify.
+- [ ] I checked `README.md` to see if there is a need to update, and updated if necessary.
