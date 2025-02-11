@@ -8,6 +8,7 @@ from time import sleep
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Callable, Iterable
 import threading
+from textwrap import dedent
 
 import numpy as np
 from langchain_core.language_models.llms import BaseLLM
@@ -41,6 +42,9 @@ class BaseAgent(ABC):
               response as a string.
     Used for evaluating the agent's performance.
     """
+
+    _evaluation_queries_str: str
+    _evaluation_queries: List[str]
 
     def __init__(self):
         self._is_running = False
@@ -251,3 +255,112 @@ class BaseAgent(ABC):
             i += 1
 
         return f'{matches.sum() / len(matches):.03f}', matches
+
+    def self_evaluate(self, n: int = 5) -> Tuple[float, np.ndarray]:
+        """
+        Evaluates the validity of the model's responses to generated
+        evaluation queries.
+
+        This method generates `n` evaluation queries based on the model's
+        prompt template, evaluates the model's responses to those queries, and
+        returns the results.
+
+        Args:
+            n (int, optional): The number of evaluation queries to generate.
+            Defaults to 5.
+
+        Returns:
+            Tuple[float, np.ndarray]:
+                - A float representing the fraction of valid responses
+                  (validity score).
+                - A numpy array containing a boolean value for each query,
+                where `True` indicates a valid response and `False` indicates
+                an invalid response.
+
+        Raises:
+            RuntimeError: If the number of generated evaluation queries does
+            not match `n`. AssertionError: If the model's evaluation response
+            is not "yes" or "no".
+
+        Process:
+            1. Generate `n` evaluation queries by replacing `<QUERY>` in the
+               prompt template.
+            2. Evaluate the model's responses to these queries.
+            3. For each query, the model determines whether the response is
+               valid ("yes") or not ("no").
+            4. Return the fraction of valid responses and a boolean array
+               representing the validity
+            of responses for all queries.
+
+        Notes:
+            - The prompt template and separator used for evaluation queries
+              are defined within the method.
+            - Temperature and max tokens for the evaluation LLM are not
+              currently configurable (marked as TODO).
+            - This method relies on the `self._prompt` and `self.base_llm`
+              components for generating
+            and evaluating responses.
+        """
+        matches = np.zeros(n)
+
+        sep = '### EVALUATION QUERY ###'
+
+        prompt_template = self._prompt('<QUERY>')
+
+        evaluation_query_prompt = dedent(f"""Consider the following prompt template.
+
+        ******
+        {prompt_template}
+        ******
+
+        Write {n} queries that could be used to evaluate the validity of the response.
+        Separate them with the separator {sep}.
+        These queries will replace <QUERY> in the prompt.
+
+        """)
+
+        queries_str = self\
+            .base_llm\
+            .bind(skip_prompt=True)\
+            .invoke(evaluation_query_prompt)
+        self._evaluation_queries_str = queries_str
+        queries = sep.split(queries_str)
+        if len(queries) != n:
+            raise RuntimeError(
+                "Incorrect count for evaluation queries: "
+                f"Expected: {n} "
+                f"Actual: {len(queries)}"
+            )
+
+        self._evaluation_queries = queries
+
+        for i, query in enumerate(queries):
+            prompt = self._prompt(query)
+            self_response = ''.join(list(self.respond(query)))
+            evaluation_prompt = dedent(f"""Consider the following prompt:
+
+            ******
+            {prompt}
+            ******
+
+            Consider the following response to this prompt:
+
+            ******
+            {self_response}
+            ******
+
+            Is the response a valid response to the prompt.
+            Respond only with "yes" if it is, otherwise, respond only with "no".
+
+            One-word response:""")
+
+            # TODO: Find a way to decrease the temprature and the max tokens.
+            is_valid_str = self\
+                .base_llm\
+                .bind(skip_prompt=True)\
+                .invoke(evaluation_prompt)
+
+            assert is_valid_str.strip().lower() in {'yes', 'no'}
+            matches[i] = is_valid_str.strip().lower() == 'yes'
+
+        return matches
