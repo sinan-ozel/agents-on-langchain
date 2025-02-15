@@ -9,6 +9,9 @@ The following deploys an agent based on a self-hosted hugging face model as
 an endpoint.
 
 ```python
+import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 from langchain_huggingface.llms import HuggingFacePipeline
 from agents_on_langchain.base_agent import BaseAgent
