@@ -7,7 +7,7 @@
 # a "pre-release" on PyPI. In that case, the version will be suffixed with
 # ".dev" and date and the git commit hash
 
-__version__ = "0.2.0"
+__version__ = "0.1.1"
 
 
 def streamed_response(func):
